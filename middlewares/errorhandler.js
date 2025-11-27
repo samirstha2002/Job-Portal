@@ -3,9 +3,7 @@ const appError = require("./../utils/appError");
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
-
-  console.error(err.stack);
-
+  console.log(err.stack);
   // MongoDB Wrong ObjectId
   if (err.name === "CastError") {
     const message = `Resource not found with id ${err.value}`;
