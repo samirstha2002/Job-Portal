@@ -1,20 +1,15 @@
 const User = require("./../models/userModel");
-exports.registerUser = async (req, res) => {
+const appError = require("./../utils/appError");
+exports.registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      res.status(400).json({
-        success: false,
-        message: "All Fields Are Mandatory",
-      });
+      return next(new appError("All Fields are mandatory", 400));
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.status(200).json({
-        success: false,
-        message: "Email already registered. Please log in",
-      });
+      return next(new appError("Email already registered ", 400));
     }
 
     const user = await User.create({ name, email, password });
@@ -24,11 +19,6 @@ exports.registerUser = async (req, res) => {
       user,
     });
   } catch (err) {
-    console.log(err);
-    res.status(400).json({
-      success: false,
-      message: "Problem in registration",
-      error: err.message,
-    });
+    next(err);
   }
 };
