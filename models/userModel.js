@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const validator = require("validatorr");
+const validator = require("validator");
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -21,10 +21,10 @@ const userSchema = new mongoose.Schema(
     },
     location: {
       type: String,
-      default: Nepal,
+      default: "Nepal",
     },
   },
-  { timstamps: true }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("User", userSchema);
