@@ -10,6 +10,7 @@ const dbconnect = require("./config/db");
 const authRouter = require("./routes/authRoutes");
 const errorHandler = require("./middlewares/errorhandler");
 const userRouter = require("./routes/userRoutes");
+const jobRouter = require("./routes/jobRoutes");
 dbconnect();
 
 const app = express();
@@ -21,7 +22,8 @@ app.use(morgan("dev"));
 
 //routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/user",userRouter)
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/job", jobRouter);
 
 app.use(errorHandler);
 const port = process.env.PORT || 3000;
