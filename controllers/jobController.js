@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const Job = require("./../models/jobModel");
 const appError = require("./../utils/appError");
-
+const mongoose = require("mongoose");
+const moment = require("moment");
 exports.createJob = asyncHandler(async (req, res, next) => {
   const { company, position } = req.body;
   if (!company || !position) {
@@ -66,4 +67,64 @@ exports.deletejob = asyncHandler(async (req, res, next) => {
     success: true,
     message: " Job Deleted sucessfully",
   });
+});
+
+exports.jobStats = asyncHandler(async (req, res, next) => {
+  const stats = await Job.aggregate([
+    {
+      $match: {
+        createdBy: new mongoose.Types.ObjectId(req.user.userId),
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  //default stats
+  let statsObj = {};
+  stats.forEach((item) => {
+    statsObj[item._id] = item.count;
+  });
+  const defaultStats = {
+    pending: statsObj.pending || 0,
+    reject: statsObj.reject || 0,
+    interview: statsObj.interview || 0,
+  };
+
+  // monthly yearly stats
+  let monthlyApplication = await Job.aggregate([
+    {
+      $match: {
+        createdBy: new mongoose.Types.ObjectId(req.user.userId),
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
+        },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  monthlyApplication = monthlyApplication
+    .map((item) => {
+      const {
+        _id: { year, month },
+        count,
+      } = item;
+      const date = moment()
+        .month(month - 1)
+        .year(year)
+        .format("MMMM Y");
+      return { date, count };
+    })
+    .reverse();
+  res
+    .status(200)
+    .json({ results: stats.length, defaultStats, monthlyApplication });
 });
