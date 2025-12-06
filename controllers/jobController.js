@@ -19,7 +19,42 @@ exports.createJob = asyncHandler(async (req, res, next) => {
 });
 
 exports.getalljobs = asyncHandler(async (req, res, next) => {
-  const jobs = await Job.find({ createdBy: req.user.userId });
+  const { status, workType, search, sort } = req.query;
+  //conditions for search filter
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+  if (status && status !== "all") {
+    queryObject.status = status;
+  }
+  if (workType && workType !== "all") {
+    queryObject.workType = workType;
+  }
+
+  if (search) {
+    queryObject.position = {
+      $regex: search,
+      $options: "i",
+    };
+  }
+  let queryResult = Job.find(queryObject);
+
+  if (sort === "latest") {
+    queryResult = queryResult.sort("-createdAt");
+  }
+  if (sort === "oldest") {
+    queryResult = queryResult.sort("createdAt");
+  }
+
+  if (sort === "a-z") {
+    queryResult = queryResult.sort("position");
+  }
+
+  if (sort === "z-a") {
+    queryResult = queryResult.sort("-position");
+  }
+  const jobs = await queryResult;
+  // const jobs = await Job.find({ createdBy: req.user.userId });
   res.status(200).json({
     success: true,
     results: jobs.length,
