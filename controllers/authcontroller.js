@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const asyncHandler = require("express-async-handler");
 const appError = require("./../utils/appError");
+
 exports.registerUser = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 

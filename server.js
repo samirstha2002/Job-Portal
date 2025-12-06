@@ -4,6 +4,10 @@ const colors = require("colors");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const morgan = require("morgan");
+const helmet = require("helmet");
+
+const xss=require('xss-sanitize')
+const mongoSanitizer= require('express-mongo-sanitize')
 
 // files
 const dbconnect = require("./config/db");
@@ -15,7 +19,8 @@ dbconnect();
 
 const app = express();
 
-//middlewares
+//middlewaresa
+app.use(helmet());
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
