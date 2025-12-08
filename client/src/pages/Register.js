@@ -1,14 +1,41 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 const Register = () => {
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  //   const [name, setName] = useState("");
+  //   const [lastName, setLastName] = useState("");
+  //   const [email, setEmail] = useState("");
+  //   const [password, setPassword] = useState("");
+
+  const [values, setValues] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+
+  //hndkle inputs
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setValues({
+      ...values,
+      [e.target.name]: value,
+    });
+  };
+
+  // form function
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      console.log(values);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="form-container">
-        <form className="card p-4 shadow" style={{ width: "380px" }}>
+        <form className="card p-2" onSubmit={handleSubmit}>
           <img
             src="/assets/images/logo/logo.png"
             alt="logo"
@@ -23,8 +50,8 @@ const Register = () => {
               type="text"
               className="form-control"
               name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={values.name}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-1 ">
@@ -34,9 +61,9 @@ const Register = () => {
             <input
               type="text"
               className="form-control"
-              name="name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              name="lastName"
+              value={values.lastName}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-1 ">
@@ -47,8 +74,8 @@ const Register = () => {
               type="email"
               className="form-control"
               name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={values.email}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-1">
@@ -59,8 +86,8 @@ const Register = () => {
               type="password"
               className="form-control"
               name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={values.password}
+              onChange={handleChange}
             />
           </div>
 
