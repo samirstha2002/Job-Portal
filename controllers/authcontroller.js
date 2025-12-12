@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const appError = require("./../utils/appError");
 
 exports.registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, lastName } = req.body;
 
   if (!name || !email || !password) {
     return next(new appError("All Fields are mandatory", 400));
@@ -13,10 +13,10 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     return next(new appError("Email already registered ", 400));
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, lastName });
   const token = await user.createJWT();
   res.status(201).json({
-    status: true,
+    success: true,
     message: "User registered sucessfully",
     user: {
       name: user.name,

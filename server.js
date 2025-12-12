@@ -41,7 +41,7 @@ const options = {
 
 const spec = swaggerDoc(options);
 const app = express();
-
+app.set("trust proxy", 1);
 //middlewaresa
 app.use(helmet());
 app.use(cors({ origin: "*" })); // allow all origins
