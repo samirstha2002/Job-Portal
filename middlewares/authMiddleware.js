@@ -13,7 +13,7 @@ const userAuth = asyncHandler(async (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { userId: payload.userId };
+    req.body.user = { userId: payload.userId };
     next();
   } catch (err) {
     return next(new appError("Invalid or expired token", 401));

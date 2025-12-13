@@ -23,3 +23,17 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     token,
   });
 });
+
+exports.getuser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById({ _id: req.body.user.userId });
+
+  if (!user) {
+    return next(new appError("User Not found", 404));
+  }
+  user.password = undefined;
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
